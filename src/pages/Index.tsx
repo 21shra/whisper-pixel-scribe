@@ -1,12 +1,13 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImageUpload } from '@/components/ImageUpload';
 import { MessageInput } from '@/components/MessageInput';
 import { ImagePreview } from '@/components/ImagePreview';
+import { AIAssistant } from '@/components/AIAssistant';
+import { AIAnalysis } from '@/components/AIAnalysis';
 import { Button } from "@/components/ui/button";
-import { Download, Upload, Eye, EyeOff, Shield } from 'lucide-react';
+import { Download, Upload, Eye, EyeOff, Shield, Bot } from 'lucide-react';
 import { encodeMessage, decodeMessage } from '@/utils/steganography';
 import { toast } from "sonner";
 
@@ -23,6 +24,14 @@ const Index = () => {
     setEncodedImageUrl(null);
     setDecodedMessage("");
     toast.success("Image uploaded successfully!");
+  };
+
+  const handleMessageSuggestion = (suggestedMessage: string) => {
+    setMessage(suggestedMessage);
+  };
+
+  const handleOptimizedMessage = (optimizedMessage: string) => {
+    setMessage(optimizedMessage);
   };
 
   const handleEncode = async () => {
@@ -85,15 +94,16 @@ const Index = () => {
           <div className="flex items-center justify-center gap-3 mb-4">
             <Shield className="h-8 w-8 text-blue-400" />
             <h1 className="text-4xl font-bold text-white">SteganoCrypt</h1>
+            <Bot className="h-8 w-8 text-green-400" />
           </div>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Hide secret messages within images using advanced steganography techniques. 
+            AI-powered steganography with advanced security analysis and intelligent assistance.
             Your secrets, invisible to the naked eye.
           </p>
         </div>
 
         {/* Main Interface */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-8 bg-slate-800 border-slate-700">
               <TabsTrigger 
@@ -113,114 +123,140 @@ const Index = () => {
             </TabsList>
 
             <TabsContent value="encode" className="space-y-6 animate-fade-in">
-              <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Upload className="h-5 w-5 text-blue-400" />
-                    Encode Secret Message
-                  </CardTitle>
-                  <CardDescription className="text-slate-400">
-                    Upload an image and enter your secret message to hide it within the image data.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <ImageUpload onImageUpload={handleImageUpload} />
-                  
-                  {uploadedImage && (
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <ImagePreview 
-                          file={uploadedImage} 
-                          title="Original Image"
-                        />
-                        <MessageInput 
-                          value={message}
-                          onChange={setMessage}
-                          placeholder="Enter your secret message..."
-                        />
-                        <Button 
-                          onClick={handleEncode}
-                          disabled={isProcessing || !message.trim()}
-                          className="w-full bg-blue-600 hover:bg-blue-700"
-                        >
-                          {isProcessing ? "Encoding..." : "Hide Message"}
-                        </Button>
-                      </div>
+              <div className="grid lg:grid-cols-3 gap-6">
+                {/* Main encoding interface */}
+                <div className="lg:col-span-2">
+                  <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle className="text-white flex items-center gap-2">
+                        <Upload className="h-5 w-5 text-blue-400" />
+                        Encode Secret Message
+                      </CardTitle>
+                      <CardDescription className="text-slate-400">
+                        Upload an image and enter your secret message to hide it within the image data.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <ImageUpload onImageUpload={handleImageUpload} />
                       
-                      {encodedImageUrl && (
-                        <div className="space-y-4 animate-scale-in">
-                          <div className="relative">
-                            <img 
-                              src={encodedImageUrl} 
-                              alt="Encoded" 
-                              className="w-full rounded-lg border border-slate-600"
+                      {uploadedImage && (
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div className="space-y-4">
+                            <ImagePreview 
+                              file={uploadedImage} 
+                              title="Original Image"
                             />
-                            <div className="absolute top-2 right-2">
-                              <Button
-                                size="sm"
-                                onClick={handleDownload}
-                                className="bg-green-600 hover:bg-green-700"
-                              >
-                                <Download className="h-4 w-4 mr-1" />
-                                Download
-                              </Button>
-                            </div>
+                            <MessageInput 
+                              value={message}
+                              onChange={setMessage}
+                              placeholder="Enter your secret message..."
+                            />
+                            <Button 
+                              onClick={handleEncode}
+                              disabled={isProcessing || !message.trim()}
+                              className="w-full bg-blue-600 hover:bg-blue-700"
+                            >
+                              {isProcessing ? "Encoding..." : "Hide Message"}
+                            </Button>
                           </div>
-                          <p className="text-sm text-slate-400 text-center">
-                            Message successfully hidden! The image looks identical but contains your secret.
-                          </p>
+                          
+                          {encodedImageUrl && (
+                            <div className="space-y-4 animate-scale-in">
+                              <div className="relative">
+                                <img 
+                                  src={encodedImageUrl} 
+                                  alt="Encoded" 
+                                  className="w-full rounded-lg border border-slate-600"
+                                />
+                                <div className="absolute top-2 right-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={handleDownload}
+                                    className="bg-green-600 hover:bg-green-700"
+                                  >
+                                    <Download className="h-4 w-4 mr-1" />
+                                    Download
+                                  </Button>
+                                </div>
+                              </div>
+                              <p className="text-sm text-slate-400 text-center">
+                                Message successfully hidden! The image looks identical but contains your secret.
+                              </p>
+                            </div>
+                          )}
                         </div>
                       )}
-                    </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* AI Assistant Sidebar */}
+                <div className="space-y-6">
+                  <AIAssistant onMessageSuggestion={handleMessageSuggestion} />
+                  {message && (
+                    <AIAnalysis 
+                      message={message} 
+                      onOptimizedMessage={handleOptimizedMessage}
+                    />
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </TabsContent>
 
             <TabsContent value="decode" className="space-y-6 animate-fade-in">
-              <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Eye className="h-5 w-5 text-blue-400" />
-                    Reveal Hidden Message
-                  </CardTitle>
-                  <CardDescription className="text-slate-400">
-                    Upload an image that may contain a hidden message to extract the secret data.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <ImageUpload onImageUpload={handleImageUpload} />
-                  
-                  {uploadedImage && (
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <ImagePreview 
-                          file={uploadedImage} 
-                          title="Uploaded Image"
-                        />
-                        <Button 
-                          onClick={handleDecode}
-                          disabled={isProcessing}
-                          className="w-full bg-blue-600 hover:bg-blue-700"
-                        >
-                          {isProcessing ? "Decoding..." : "Reveal Message"}
-                        </Button>
-                      </div>
+              <div className="grid lg:grid-cols-3 gap-6">
+                {/* Main decoding interface */}
+                <div className="lg:col-span-2">
+                  <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle className="text-white flex items-center gap-2">
+                        <Eye className="h-5 w-5 text-blue-400" />
+                        Reveal Hidden Message
+                      </CardTitle>
+                      <CardDescription className="text-slate-400">
+                        Upload an image that may contain a hidden message to extract the secret data.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <ImageUpload onImageUpload={handleImageUpload} />
                       
-                      {decodedMessage && (
-                        <div className="space-y-4 animate-scale-in">
-                          <div className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
-                            <h3 className="text-white font-semibold mb-2">Hidden Message:</h3>
-                            <p className="text-slate-200 whitespace-pre-wrap break-words">
-                              {decodedMessage}
-                            </p>
+                      {uploadedImage && (
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div className="space-y-4">
+                            <ImagePreview 
+                              file={uploadedImage} 
+                              title="Uploaded Image"
+                            />
+                            <Button 
+                              onClick={handleDecode}
+                              disabled={isProcessing}
+                              className="w-full bg-blue-600 hover:bg-blue-700"
+                            >
+                              {isProcessing ? "Decoding..." : "Reveal Message"}
+                            </Button>
                           </div>
+                          
+                          {decodedMessage && (
+                            <div className="space-y-4 animate-scale-in">
+                              <div className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
+                                <h3 className="text-white font-semibold mb-2">Hidden Message:</h3>
+                                <p className="text-slate-200 whitespace-pre-wrap break-words">
+                                  {decodedMessage}
+                                </p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* AI Assistant Sidebar for decode */}
+                <div className="space-y-6">
+                  <AIAssistant onMessageSuggestion={handleMessageSuggestion} />
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
@@ -228,7 +264,7 @@ const Index = () => {
         {/* Footer */}
         <div className="text-center mt-12 text-slate-400">
           <p className="text-sm">
-            Steganography • Hide in plain sight • Your secrets are safe
+            AI-Enhanced Steganography • Hide in plain sight • Your secrets are safe
           </p>
         </div>
       </div>
