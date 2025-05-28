@@ -6,6 +6,7 @@ import { MessageInput } from '@/components/MessageInput';
 import { ImagePreview } from '@/components/ImagePreview';
 import { AIAssistant } from '@/components/AIAssistant';
 import { AIAnalysis } from '@/components/AIAnalysis';
+import { GoogleIntegration } from '@/components/GoogleIntegration';
 import { Button } from "@/components/ui/button";
 import { Download, Upload, Eye, EyeOff, Shield, Bot } from 'lucide-react';
 import { encodeMessage, decodeMessage } from '@/utils/steganography';
@@ -87,23 +88,23 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 font-['Inter']">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Shield className="h-8 w-8 text-blue-400" />
-            <h1 className="text-4xl font-bold text-white">SteganoCrypt</h1>
+            <h1 className="text-4xl font-bold text-white font-['Inter']">SteganoCrypt</h1>
             <Bot className="h-8 w-8 text-green-400" />
           </div>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            AI-powered steganography with advanced security analysis and intelligent assistance.
+            AI-powered steganography with Google Cloud integration and advanced security analysis.
             Your secrets, invisible to the naked eye.
           </p>
         </div>
 
         {/* Main Interface */}
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-8 bg-slate-800 border-slate-700">
               <TabsTrigger 
@@ -123,7 +124,7 @@ const Index = () => {
             </TabsList>
 
             <TabsContent value="encode" className="space-y-6 animate-fade-in">
-              <div className="grid lg:grid-cols-3 gap-6">
+              <div className="grid lg:grid-cols-4 gap-6">
                 {/* Main encoding interface */}
                 <div className="lg:col-span-2">
                   <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
@@ -200,11 +201,20 @@ const Index = () => {
                     />
                   )}
                 </div>
+
+                {/* Google Integration Sidebar */}
+                <div className="space-y-6">
+                  <GoogleIntegration 
+                    uploadedImage={uploadedImage}
+                    message={message}
+                    encodedImageUrl={encodedImageUrl}
+                  />
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="decode" className="space-y-6 animate-fade-in">
-              <div className="grid lg:grid-cols-3 gap-6">
+              <div className="grid lg:grid-cols-4 gap-6">
                 {/* Main decoding interface */}
                 <div className="lg:col-span-2">
                   <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
@@ -256,6 +266,15 @@ const Index = () => {
                 <div className="space-y-6">
                   <AIAssistant onMessageSuggestion={handleMessageSuggestion} />
                 </div>
+
+                {/* Google Integration for decode */}
+                <div className="space-y-6">
+                  <GoogleIntegration 
+                    uploadedImage={uploadedImage}
+                    message={decodedMessage}
+                    encodedImageUrl={null}
+                  />
+                </div>
               </div>
             </TabsContent>
           </Tabs>
@@ -264,7 +283,7 @@ const Index = () => {
         {/* Footer */}
         <div className="text-center mt-12 text-slate-400">
           <p className="text-sm">
-            AI-Enhanced Steganography • Hide in plain sight • Your secrets are safe
+            AI-Enhanced Steganography with Google Cloud • Hide in plain sight • Your secrets are safe
           </p>
         </div>
       </div>
